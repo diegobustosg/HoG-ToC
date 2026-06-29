@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>House of Glam — Theory of Change</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --f: 'Inter', 'Segoe UI', sans-serif;
+  --col-in:  #17375e; --bg-in:  #eaf0f7; --brd-in:  #c2d4e8;
+  --col-as:  #7a5c00; --bg-as:  #fef9ec; --brd-as:  #e8d080;
+  --col-out: #145048; --bg-out: #e5f3f0; --brd-out: #a8d4cc;
+  --col-oc:  #1a5230; --bg-oc:  #e8f5ee; --brd-oc:  #a2d4b4;
+  --col-imp: #6e1840; --bg-imp: #f9ecf3; --brd-imp: #d4a0bc;
+  --e-red:   #c0392b; --e-green:#1a7a3c; --e-blue:  #1558c0;
+  --e-feed:  #7a5c00;
+  --warn:    #c05000; --warn-bg: #fff4ec; --warn-brd:#f0b070;
+  --now-col: #1a5c3a; --now-bg:  #e6f5ec;
+  --white:   #fff; --g50:#f8faf9; --g100:#f0f4f2;
+  --g200:#e0e7e4; --g400:#9aada6; --g600:#5a6e68; --g900:#1a2420;
+}
+html,body { height:100%; font-family:var(--f); background:var(--g100);
+            color:var(--g900); font-size:14px; line-height:1.5; overflow:hidden; }
+.shell { display:flex; flex-direction:column; height:100vh; }
+
+/* ── Header ── */
+.page-header { background:var(--col-in); color:#fff; padding:12px 24px 8px;
+               flex-shrink:0; border-bottom:4px solid #c9a227; }
+.page-header .eyebrow { font-size:10px; font-weight:600; letter-spacing:2px;
+                        text-transform:uppercase; opacity:.65; margin-bottom:2px; }
+.page-header h1 { font-size:19px; font-weight:700; letter-spacing:-.3px; margin-bottom:1px; }
+.page-header .tagline { font-size:11.5px; opacity:.75; font-style:italic; }
+
+/* ── Status banner ── */
+.status-banner { background:#fff8ec; border-bottom:2px solid #f0b070;
+                 padding:5px 20px; display:flex; align-items:center; gap:20px;
+                 flex-shrink:0; flex-wrap:wrap; }
+.status-item { display:flex; align-items:center; gap:6px; font-size:11.5px; }
+.status-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.status-item.live   .status-dot { background:#1a7a3c; }
+.status-item.target .status-dot { background:#9aada6; border:1px solid #9aada6; }
+.status-item.warn   .status-dot { background:#c05000; }
+.status-sep { width:1px; height:16px; background:#f0d0a0; }
+.status-label { font-size:10px; font-weight:700; text-transform:uppercase;
+                letter-spacing:1px; color:#c05000; margin-right:4px; }
+
+/* ── Toolbar ── */
+.toolbar { display:flex; align-items:center; gap:8px; padding:7px 20px;
+           background:var(--white); border-bottom:1px solid var(--g200);
+           flex-shrink:0; flex-wrap:wrap; }
+.section-label { font-size:10px; font-weight:700; text-transform:uppercase;
+                 letter-spacing:1.2px; color:var(--g400); margin-right:4px; }
+.tb-sep { width:1px; height:20px; background:var(--g200); margin:0 4px; }
+.tb-spacer { flex:1; }
+.filter-btn { display:inline-flex; align-items:center; gap:5px; padding:4px 12px;
+              border-radius:20px; border:1.5px solid; font-size:11px; font-weight:600;
+              cursor:pointer; transition:all .18s; background:var(--white);
+              font-family:var(--f); }
+.filter-btn.all   { color:var(--g600); border-color:var(--g200); }
+.filter-btn.red   { color:var(--e-red);   border-color:var(--e-red);   }
+.filter-btn.green { color:var(--e-green); border-color:var(--e-green); }
+.filter-btn.blue  { color:var(--e-blue);  border-color:var(--e-blue);  }
+.filter-btn.feed  { color:var(--e-feed);  border-color:var(--e-feed);  }
+.filter-btn.active.all   { background:var(--g900); color:#fff; border-color:var(--g900); }
+.filter-btn.active.red   { background:var(--e-red);   color:#fff; }
+.filter-btn.active.green { background:var(--e-green); color:#fff; }
+.filter-btn.active.blue  { background:var(--e-blue);  color:#fff; }
+.filter-btn.active.feed  { background:var(--e-feed);  color:#fff; }
+.filter-btn:hover { opacity:.8; }
+.btn-reset { padding:4px 12px; border-radius:20px; border:1.5px solid var(--g200);
+             background:var(--white); font-size:11px; font-weight:600;
+             color:var(--g600); cursor:pointer; font-family:var(--f); transition:all .18s; }
+.btn-reset:hover { background:var(--g100); }
+
+/* ── Legend ── */
+.legend { display:flex; align-items:center; gap:14px; padding:4px 20px;
+          background:var(--g50); border-bottom:1px solid var(--g200);
+          flex-shrink:0; flex-wrap:wrap; }
+.leg-item { display:flex; align-items:center; gap:5px; font-size:10.5px; color:var(--g600); }
+.leg-dot  { width:11px; height:11px; border-radius:2px; border:2px solid; }
+.leg-line { width:22px; height:2.5px; border-radius:2px; flex-shrink:0; }
+.leg-dashed { width:22px; height:0; border-top:2.5px dashed; flex-shrink:0; }
+.leg-sep  { width:1px; height:14px; background:var(--g200); }
+
+/* ── Main ── */
+.main { display:flex; flex:1; overflow:hidden; min-height:0; }
+.diagram-wrap { flex:1; overflow:auto; position:relative; min-width:0; }
+.svg-overlay { position:absolute; top:0; left:0; pointer-events:none; z-index:0; overflow:visible; }
+.edge { fill:none; stroke-linecap:round; transition:opacity .2s, stroke-width .2s; }
+
+/* ── Columns ── */
+.columns { display:flex; flex-direction:row; align-items:flex-start;
+           gap:0; padding:20px 20px 10px; position:relative; min-width:max-content; }
+.column { display:flex; flex-direction:column; width:192px; flex-shrink:0; position:relative; z-index:1; }
+.column + .column { margin-left:56px; }
+.col-header { text-align:center; padding:5px 0 10px; font-size:9.5px; font-weight:700;
+              letter-spacing:2px; text-transform:uppercase; }
+.col-sub { text-align:center; margin-top:-6px; padding-bottom:8px;
+           font-size:9px; font-weight:500; opacity:.65; }
+
+/* ── Node card ── */
+.node-card { border-radius:8px; border:1.5px solid; padding:9px 10px 9px 13px;
+             margin-bottom:7px; cursor:pointer; position:relative; overflow:hidden;
+             transition:box-shadow .18s, opacity .2s, transform .12s;
+             background:var(--white); display:flex; align-items:flex-start; gap:7px; }
+.node-card::before { content:''; position:absolute; left:0; top:0; bottom:0;
+                     width:4px; border-radius:8px 0 0 8px; }
+.node-card:hover { transform:translateY(-1px); }
+.node-card.selected { box-shadow:0 0 0 2.5px currentColor, 0 4px 16px rgba(0,0,0,.12); }
+.node-card.dimmed   { opacity:.12; transform:none; }
+.node-card.neighbor { box-shadow:0 0 0 1.5px currentColor, 0 3px 10px rgba(0,0,0,.08); }
+.node-card.inactive { opacity:.55; border-style:dashed; }
+
+/* Bottleneck card */
+.node-card.bottleneck { border-color:var(--warn-brd)!important; background:var(--warn-bg)!important;
+                        animation:pulse-warn 2.5s ease-in-out infinite; }
+.node-card.bottleneck::before { background:var(--warn)!important; }
+@keyframes pulse-warn {
+  0%,100% { box-shadow:0 0 0 0 rgba(192,80,0,.2); }
+  50%      { box-shadow:0 0 0 5px rgba(192,80,0,.0); }
+}
+
+/* Card parts */
+.card-icon { font-size:15px; flex-shrink:0; margin-top:1px; }
+.card-body { flex:1; min-width:0; }
+.card-label { font-size:11.5px; font-weight:600; line-height:1.35; }
+.card-sub   { font-size:10px; opacity:.65; margin-top:2px; line-height:1.3; }
+
+/* Now badge */
+.now-badge { display:inline-flex; align-items:center; gap:3px; margin-top:4px;
+             background:var(--now-bg); border:1px solid #a0d0b0;
+             border-radius:4px; padding:1px 5px; font-size:9.5px;
+             font-weight:600; color:var(--now-col); line-height:1.4; }
+.now-badge::before { content:'●'; font-size:6px; }
+.warn-badge { display:inline-flex; align-items:center; gap:3px; margin-top:3px;
+              background:var(--warn-bg); border:1px solid var(--warn-brd);
+              border-radius:4px; padding:1px 5px; font-size:9.5px;
+              font-weight:600; color:var(--warn); line-height:1.4; }
+
+/* Milestone card (special) */
+.node-card.milestone { background:#fdf0ff!important; border-color:#c080e0!important; }
+.node-card.milestone::before { background:#9030c0!important; }
+
+/* Layer colour classes */
+.col-inputs   .node-card { border-color:var(--brd-in);  color:var(--col-in);  background:var(--bg-in);  }
+.col-inputs   .node-card::before { background:var(--col-in); }
+.col-assump   .node-card { border-color:var(--brd-as);  color:var(--col-as);  background:var(--bg-as);  }
+.col-assump   .node-card::before { background:var(--col-as); }
+.col-outputs  .node-card { border-color:var(--brd-out); color:var(--col-out); background:var(--bg-out); }
+.col-outputs  .node-card::before { background:var(--col-out); }
+.col-outcomes .node-card { border-color:var(--brd-oc);  color:var(--col-oc);  background:var(--bg-oc);  }
+.col-outcomes .node-card::before { background:var(--col-oc); }
+.col-impacts  .node-card { border-color:var(--brd-imp); color:var(--col-imp); background:var(--bg-imp); }
+.col-impacts  .node-card::before { background:var(--col-imp); }
+.col-inputs   .col-header { color:var(--col-in); }
+.col-assump   .col-header { color:var(--col-as); }
+.col-outputs  .col-header { color:var(--col-out); }
+.col-outcomes .col-header { color:var(--col-oc); }
+.col-impacts  .col-header { color:var(--col-imp); }
+
+/* ── Timeline strip ── */
+.timeline-strip { display:flex; flex-direction:row; padding:0 20px 20px;
+                  min-width:max-content; position:relative; z-index:1; }
+.tl-col { flex-shrink:0; width:192px; }
+.tl-col + .tl-col { margin-left:56px; }
+.tl-block { border-radius:6px; padding:5px 8px; text-align:center;
+            border-top:3px solid; }
+.tl-block .tl-phase { font-size:9.5px; font-weight:700; letter-spacing:.8px;
+                      text-transform:uppercase; }
+.tl-block .tl-when  { font-size:9px; opacity:.7; margin-top:1px; }
+.tl-now    { border-color:#c05000; background:#fff4ec; color:#c05000; }
+.tl-y1     { border-color:var(--col-out); background:var(--bg-out); color:var(--col-out); }
+.tl-y23    { border-color:var(--col-oc);  background:var(--bg-oc);  color:var(--col-oc); }
+.tl-y5     { border-color:var(--col-imp); background:var(--bg-imp); color:var(--col-imp); }
+
+/* ── Detail panel ── */
+.detail-panel { width:340px; flex-shrink:0; background:var(--white);
+                border-left:1px solid var(--g200);
+                display:flex; flex-direction:column; overflow:hidden;
+                transition:width .22s ease; }
+.detail-panel.closed { width:0; border:none; }
+.panel-scroll { overflow-y:auto; flex:1; padding:18px; }
+
+.p-chip { display:inline-block; padding:2px 10px; border-radius:10px;
+          font-size:9.5px; font-weight:700; letter-spacing:.8px;
+          text-transform:uppercase; margin-bottom:8px; color:#fff; }
+.p-title { font-size:15px; font-weight:700; line-height:1.3; margin-bottom:4px; }
+.p-desc  { font-size:12.5px; color:var(--g600); line-height:1.55;
+           margin-bottom:12px; padding-bottom:12px; border-bottom:1px solid var(--g200); }
+.p-sec   { font-size:9.5px; font-weight:700; text-transform:uppercase;
+           letter-spacing:1.2px; color:var(--g400); margin:10px 0 5px; }
+
+/* Now / target split in panel */
+.now-target { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px; }
+.nt-box { border-radius:6px; padding:8px 10px; border:1px solid; }
+.nt-box .nt-label { font-size:9px; font-weight:700; text-transform:uppercase;
+                    letter-spacing:.8px; margin-bottom:4px; }
+.nt-box .nt-val   { font-size:12px; font-weight:600; line-height:1.35; }
+.nt-now    { background:var(--now-bg);  border-color:#a0d0b0; }
+.nt-now    .nt-label { color:var(--now-col); }
+.nt-now    .nt-val   { color:var(--now-col); }
+.nt-target { background:var(--bg-in);   border-color:var(--brd-in); }
+.nt-target .nt-label { color:var(--col-in); }
+.nt-target .nt-val   { color:var(--col-in); }
+
+/* Warn box */
+.warn-box { background:var(--warn-bg); border:1.5px solid var(--warn-brd);
+            border-radius:6px; padding:8px 10px; margin-bottom:10px;
+            font-size:12px; color:var(--warn); line-height:1.45; }
+.warn-box strong { font-weight:700; }
+
+/* Milestone box */
+.milestone-box { background:#fdf0ff; border:1.5px solid #c080e0; border-radius:6px;
+                 padding:8px 10px; margin-bottom:10px; font-size:12px;
+                 color:#6010a0; line-height:1.45; }
+.milestone-box .mb-title { font-weight:700; margin-bottom:4px; font-size:12px; }
+.milestone-box .mb-item { display:flex; justify-content:space-between;
+                           padding:2px 0; border-bottom:1px solid #e0b8f8; }
+.milestone-box .mb-item:last-child { border:none; }
+
+/* KPI grid */
+.kpi-grid { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }
+.kpi { border-radius:8px; border:1px solid; padding:6px 10px; text-align:center; }
+.kpi .kv { font-size:14px; font-weight:700; line-height:1; }
+.kpi .kl { font-size:10px; opacity:.7; margin-top:2px; line-height:1.2; }
+.kpi.verify { border-style:dashed; }
+.kpi.verify .kv::after { content:' ⚠️'; font-size:10px; }
+
+/* Logic blocks */
+.logic-block { border-radius:6px; overflow:hidden; margin-bottom:6px; border:1px solid; }
+.logic-kw    { font-size:10px; font-weight:700; letter-spacing:1px;
+               text-transform:uppercase; padding:4px 10px; }
+.logic-body  { font-size:12px; line-height:1.55; padding:8px 10px;
+               font-style:italic; color:#444; }
+.logic-block.then .logic-body { font-style:normal; color:#1a2420; }
+
+.p-list { list-style:none; margin-bottom:10px; }
+.p-list li { font-size:12px; color:var(--g600); padding:3px 0 3px 14px;
+             position:relative; line-height:1.4; border-bottom:1px solid #f4f4f4; }
+.p-list li:last-child { border:none; }
+.p-list li::before { content:'›'; position:absolute; left:2px; font-weight:700; }
+
+.conn-row { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px; }
+.conn-tag { display:inline-flex; align-items:center; gap:4px; font-size:10.5px;
+            padding:3px 8px; border-radius:10px; border:1.5px solid;
+            cursor:pointer; font-family:var(--f); font-weight:500;
+            transition:opacity .15s; }
+.conn-tag:hover { opacity:.75; }
+.etype-badge { display:inline-flex; align-items:center; gap:4px; font-size:10px;
+               padding:2px 8px; border-radius:8px; border:1px solid;
+               margin-right:4px; margin-bottom:6px; }
+.etype-dot { width:7px; height:7px; border-radius:50%; }
+
+.panel-empty { display:flex; flex-direction:column; align-items:center;
+               justify-content:center; height:100%; color:var(--g400);
+               font-size:12.5px; text-align:center; gap:10px; padding:30px; }
+.panel-empty .pe-icon { font-size:32px; opacity:.3; }
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- ── TOOLBAR ── -->
+<div class="toolbar">
+  <span class="section-label">Highlight path</span>
+  <button class="filter-btn all active" data-f="all">All</button>
+  <button class="filter-btn red"   data-f="red">● Operational &amp; data</button>
+  <button class="filter-btn green" data-f="green">● Personnel &amp; franchise</button>
+  <button class="filter-btn blue"  data-f="blue">● Supply &amp; partner</button>
+  <button class="filter-btn feed"  data-f="feed">⟳ Feedback loops</button>
+  <div class="tb-sep"></div>
+  <span class="section-label">Source: Miro + Brian CEO meeting</span>
+  <div class="tb-spacer"></div>
+  <button class="btn-reset" id="btn-reset">✕ Reset</button>
+</div>
+
+<!-- ── LEGEND ── -->
+<div class="legend">
+  <span style="font-size:10px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:1px;margin-right:4px">Nodes</span>
+  <div class="leg-item"><div class="leg-dot" style="background:var(--bg-in);border-color:var(--col-in)"></div>Inputs</div>
+  <div class="leg-item"><div class="leg-dot" style="background:var(--bg-as);border-color:var(--col-as)"></div>Assumptions</div>
+  <div class="leg-item"><div class="leg-dot" style="background:var(--bg-out);border-color:var(--col-out)"></div>Outputs</div>
+  <div class="leg-item"><div class="leg-dot" style="background:var(--bg-oc);border-color:var(--col-oc)"></div>Outcomes</div>
+  <div class="leg-item"><div class="leg-dot" style="background:var(--bg-imp);border-color:var(--col-imp)"></div>Impacts</div>
+  <div class="leg-item"><div class="leg-dot" style="background:var(--warn-bg);border-color:var(--warn)"></div>⚠️ Bottleneck</div>
+  <div class="leg-sep"></div>
+  <span style="font-size:10px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:1px;margin-right:4px">Edges</span>
+  <div class="leg-item"><div class="leg-line" style="background:var(--e-red)"></div>Operational &amp; data</div>
+  <div class="leg-item"><div class="leg-line" style="background:var(--e-green)"></div>Personnel &amp; franchise</div>
+  <div class="leg-item"><div class="leg-line" style="background:var(--e-blue)"></div>Supply &amp; partner</div>
+  <div class="leg-item"><div class="leg-dashed" style="border-color:var(--e-feed)"></div>Feedback loop (new)</div>
+  <div class="leg-sep"></div>
+  <div class="leg-item"><span style="font-size:9.5px;padding:1px 5px;border-radius:3px;background:var(--now-bg);color:var(--now-col);font-weight:600">● Now</span>&nbsp;Current state badge</div>
+</div>
+
+<!-- ── MAIN ── -->
+<div class="main">
+  <div class="diagram-wrap" id="diagram-wrap">
+    <svg class="svg-overlay" id="svg-overlay">
+      <defs>
+        <marker id="arrow-feed" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L8,3 z" fill="#7a5c00" opacity="0.7"/>
+        </marker>
+      </defs>
+    </svg>
+    <div class="columns" id="columns"></div>
+    <div class="timeline-strip" id="timeline-strip"></div>
+  </div>
+
+  <!-- Detail panel -->
+  <div class="detail-panel closed" id="detail-panel">
+    <div class="panel-scroll" id="panel-scroll">
+      <div class="panel-empty">
+        <div class="pe-icon">↖</div>
+        <div>Click any card to see details, current state, targets, and causal logic</div>
+      </div>
+    </div>
+  </div>
+</div><!-- .main -->
+
+<script>
+// ══════════════════════════════════════════════════════════════════════════════
+// DATA — Updated with CEO Brian meeting notes
+// ══════════════════════════════════════════════════════════════════════════════
+
+const LAYER_META = [
+  { cls:'col-inputs',   label:'INPUTS',      sub:'Layer 1',           chip:'#17375e' },
+  { cls:'col-assump',   label:'ASSUMPTIONS', sub:'Inputs → Outputs',  chip:'#7a5c00' },
+  { cls:'col-outputs',  label:'OUTPUTS',     sub:'Layer 2',           chip:'#145048' },
+  { cls:'col-assump',   label:'ASSUMPTIONS', sub:'Outputs → Outcomes',chip:'#7a5c00' },
+  { cls:'col-outcomes', label:'OUTCOMES',    sub:'Layer 3',           chip:'#1a5230' },
+  { cls:'col-assump',   label:'ASSUMPTIONS', sub:'Outcomes → Impacts',chip:'#7a5c00' },
+  { cls:'col-impacts',  label:'IMPACTS',     sub:'Layer 4',           chip:'#6e1840' },
+];
+
+const NODES = [
+  // ── INPUTS ─────────────────────────────────────────────────────────────
+  { id:'i1', layer:0, icon:'💰', label:'Financial Capital', sub:'USD 750k target',
+    now:'Early-stage; ~$3.5–5.5k machine investment is the near-term unlock',
+    target:'USD 750,000 (grants, impact investment, franchise fees)',
+    desc:'Current operations run lean with 90% outsourced services. The near-term investment that unlocks in-house scale is surprisingly low: a washing machine ($3–5k) + sewing machine ($300–500) could cut operational costs by up to 80%.',
+    milestone:{ title:'Near-term machine investment', items:[
+      {l:'Washing machine',v:'$3,000–5,000'},
+      {l:'Sewing machine',v:'$300–500'},
+      {l:'Total investment',v:'~$3.5–5.5k'},
+      {l:'Expected cost reduction',v:'Up to 80%'},
+      {l:'Remaining costs',v:'Utilities only'},
+    ]},
+    kpis:[{v:'$750k',l:'Total ask'},{v:'$5.5k',l:'Machine unlock'},{v:'80%',l:'Cost cut potential'}] },
+
+  { id:'i2', layer:0, icon:'🏭', label:'Physical Assets', sub:'Hub target; workshop now',
+    now:'Contract tailor\'s own workshop. No in-house hub yet.',
+    target:'Sorting hub + upcycling workshop + retail flagship + mobile carts + POS systems',
+    desc:'Currently relying on a contractor\'s external workshop. The strategic goal is to bring production in-house by acquiring sewing machines and washing machines — the first concrete step toward the full sorting hub model.',
+    content:['Contract tailor\'s workshop (current)','Target: in-house sorting hub (70–120t/month)','Target: upcycling workshop with washing + sewing machines','Target: retail flagship + mobile carts + POS systems'] },
+
+  { id:'i3', layer:0, icon:'👥', label:'Human Capital', sub:'10–15 youth now → 30–50 jobs target',
+    now:'10–15 youth engaged (direct/intermittent) + 1 contract tailor (500–5,000 KES/item)',
+    target:'Operations team, tailors, social workers, franchise trainers, MEL officers',
+    desc:'Per the CEO impact email, 10–15 youth are currently engaged — directly or intermittently — in sorting, cleaning, packaging, logistics, repair assistance, resale support, and inventory organisation, plus one contract tailor paid per item (500–5,000 KES depending on complexity). Most engagement is informal/voluntary today; transition to paid, stable employment is a prerequisite for scaling the franchise model.',
+    kpis:[{v:'10–15',l:'Youth engaged now'},{v:'1',l:'Contract tailor'},{v:'30–50',l:'Jobs target'}] },
+
+  { id:'i4', layer:0, icon:'👗', label:'Clothing Supply', sub:'NGOs, lots, corporates',
+    desc:'Raw material inputs for all processing streams. Supply reliability is currently constrained by the logistics bottleneck (see Collection Logistics node).',
+    content:['Donated garments from NGOs & corporates','International second-hand lot suppliers','Sustainable fabric lines for upcycling','Grade A–D classification at intake'] },
+
+  { id:'i5', layer:0, icon:'🤝', label:'Partnerships', sub:'MOUs with institutions',
+    desc:'Institutional relationships enabling social programme delivery. MOUs with children\'s homes and refugee centres are planned; vocational institution links in development.',
+    content:["MOUs with children's homes & refugee centres",'Vocational institution agreements (in development)','Municipal & regulatory stakeholders'] },
+
+  { id:'i6', layer:0, icon:'💻', label:'Technology', sub:'Traceability & ESG tools',
+    desc:'Digital infrastructure for traceability, ESG reporting, and franchisee management. Currently at early stage; systems needed as network scales beyond pilot.',
+    content:['Digital tagging & traceability platform (target)','ESG reporting & MEL dashboards (target)','Digital tools & apps for franchisees'] },
+
+  { id:'i7', layer:0, icon:'📋', label:'Knowledge & SOPs', sub:'Standards & curriculum',
+    desc:'Documented operational standards ensuring quality, hygiene, and replicability. Franchise training curriculum is being developed.',
+    content:['Grading standards (Grade A–D) & hygiene protocols','Franchise training curriculum (in development)','Brand identity & quality guidelines'] },
+
+  { id:'i8', layer:0, icon:'🚛', label:'Collection Logistics', sub:'⚠️ #1 Bottleneck',
+    isBottleneck:true,
+    now:'Pickup of clothes from sources is the primary operational constraint (per Brian, CEO)',
+    target:'Systemised collection routes, partnerships, or owned vehicle for regular pickups',
+    desc:'Identified by CEO Brian as the #1 bottleneck. Without a reliable system for collecting donated/sourced clothing from NGOs, corporates, and other sources, supply cannot be regularised and hub intake targets cannot be met. This is the most urgent operational problem to solve.',
+    kpis:[{v:'#1',l:'Stated bottleneck'},{v:'None',l:'Current system'},{v:'TBD',l:'Vehicle/route plan'}],
+    content:['No systematic collection routes or schedule currently','No dedicated vehicle for pickup','Limits clothing volume reaching the hub','Upstream of all processing and franchise supply'] },
+
+  // ── ASSUMPTIONS: Inputs → Outputs ──────────────────────────────────────
+  { id:'af', layer:1, icon:'⚡', label:'A · Financial & Machines', sub:'IF investment secured → 80% cost reduction',
+    desc:'The in-house production milestone requires only $3.5–5.5k — far below the $750k full ask. This is the most immediate financial assumption to test and the single biggest operational unlock.',
+    ifText:'machine investment ($3.5–5.5k) is secured — either the full USD 750k arrives on schedule, OR the near-term washing machine ($3–5k) and sewing machine ($300–500) are acquired first,',
+    thenText:'operating costs drop ~80% (from outsourced rates to utilities-only in-house production) and scaling to 50 franchisees within 12–18 months becomes viable.',
+    milestone:{ title:'Machine investment unlock', items:[
+      {l:'Washing machine',v:'$3,000–5,000'},
+      {l:'Sewing machine',v:'$300–500'},
+      {l:'Cost reduction',v:'~80%'},
+    ]} },
+
+  { id:'a2', layer:1, icon:'👤', label:'A · HR Transition', sub:'IF staff paid → training quality holds',
+    desc:'Currently operating on voluntary labour. Transition to paid, trained staff is a prerequisite for franchisee training quality and network stability.',
+    ifText:'voluntary staff transition to paid employment and franchise trainers maintain consistent onboarding quality,',
+    thenText:'franchise training quality is maintained, micro-franchisees can be systematically recruited and sustained in active operation, and direct hub jobs grow from 0 to 30–50.' },
+
+  { id:'a3', layer:1, icon:'📦', label:'A · Supply & Logistics', sub:'IF collection system in place → supply scales',
+    desc:'Supply reliability CANNOT hold until the logistics/collection bottleneck is solved. This is the #1 prerequisite assumption — upstream of all hub processing and franchise inventory.',
+    ifText:'a dedicated collection system (owned vehicle OR NGO logistics partnership) is in place with defined routes and schedules, AND MOU partners fulfil their clothing donation commitments,',
+    thenText:'supply reliability holds, the hub maintains sufficient material to process at target capacity, franchisees receive consistent inventory, and 500+ beneficiaries receive regular structured clothing allocations.' },
+
+  // ── OUTPUTS ────────────────────────────────────────────────────────────
+  { id:'o1', layer:2, icon:'⚙️', label:'70–120t/month Hub', sub:'3.5–5t diverted to date · target not yet active',
+    now:'0t/month in-house (90% outsourced). 3.5–5t diverted cumulatively to date',
+    target:'70–120t/month sorted, graded, cleaned, digitally tagged',
+    desc:'In-house hub capacity is still aspirational — operations remain ~90% outsourced. However, per the CEO impact email, since the pilot and operational rollout House of Glam has already diverted an estimated 3.5–5 tonnes of second-hand apparel and textiles from disposal/waste pathways, with roughly 2,500–3,000 items redistributed, resold, repaired, upcycled, or reintegrated into local circular retail. The in-house hub remains the core infrastructure milestone to scale this.',
+    kpis:[{v:'3.5–5t',l:'Diverted to date'},{v:'2.5–3k',l:'Items processed'},{v:'70–120t',l:'Monthly target'},{v:'>80%',l:'Reuse target'}],
+    inactive:true },
+
+  { id:'o2', layer:2, icon:'🏪', label:'50 Franchisees', sub:'Currently: 4–6 women participants',
+    now:'4–6 women retail traders / micro-franchise participants',
+    target:'50 micro-franchisees recruited, trained, equipped, and launched',
+    desc:'Per the CEO impact email, the initiative currently works with approximately 4–6 women retail traders and micro-franchise participants, several operating informal or semi-formal resale structures (curated apparel, high-end thrift, circular retail distribution). Target is 50, requiring systematic recruitment and the logistics bottleneck to be solved for inventory supply.',
+    kpis:[{v:'4–6',l:'Women participants now'},{v:'50',l:'Target'},{v:'Women-led',l:'Priority model'},{v:'60 days',l:'Launch target'}] },
+
+  { id:'o3', layer:2, icon:'💼', label:'30–50 Direct Jobs', sub:'Currently: 10–15 youth engaged',
+    now:'10–15 youth engaged (informal/intermittent); 0 formal paid jobs yet',
+    target:'30–50 direct jobs in hub operations',
+    desc:'Per the CEO impact email, 10–15 youth are currently engaged directly or intermittently across sorting, cleaning, packaging, logistics, repair, resale, and inventory work, gaining practical exposure to sustainable retail and circular-economy entrepreneurship. These are not yet formal paid positions — transition to structured green livelihoods requires financial sustainability, linked to machine investment cutting costs ~80% and franchisee fee income.',
+    kpis:[{v:'10–15',l:'Youth engaged now'},{v:'30–50',l:'Target jobs'},{v:'0',l:'Formal jobs yet'}],
+    inactive:true },
+
+  { id:'o4', layer:2, icon:'✂️', label:'Upcycled Lines', sub:'In development',
+    now:'1 contract tailor (500–5,000 KES/item)',
+    target:'In-house upcycled & repaired product lines at scale',
+    desc:'Currently one contract tailor operating from their own workshop. Cost: 500–5,000 KES per item depending on complexity. Target: in-house production with owned machines reducing cost to utilities only.',
+    content:['Current: contract tailor, 500–5,000 KES/item','Target: in-house sewing machine ($300–500)','Target: in-house washing machine ($3–5k)','Expected: 80% cost reduction vs. current outsourced model'] },
+
+  { id:'o5', layer:2, icon:'🏠', label:'500+ Beneficiaries', sub:'30+ households reached to date',
+    now:'At least 30 lower-income households reached with affordable clothing access',
+    target:'500+ beneficiaries via children\'s homes & refugee centre MOUs',
+    desc:"Per the CEO impact email, House of Glam has already supported affordable clothing access and redistribution for at least 30 households in lower-income and community settings. The broader target of 500+ beneficiaries via children's homes and refugee centre MOUs is still in development and scales as the supply and logistics bottleneck is resolved.",
+    kpis:[{v:'30+',l:'Households reached now'},{v:'500+',l:'Target beneficiaries'},{v:'≥70%',l:'Attendance target'}] },
+
+  { id:'o6', layer:2, icon:'🛒', label:'Sales & Revenue', sub:'KES 35–80k/month currently',
+    now:'Monthly retail sales KES 35,000–80,000 (~$270–615); weekly turnover KES 10,000–20,000',
+    target:'Subscription boxes + e-commerce + retail flagship serving middle- & high-income segment',
+    desc:'Target customers are middle- and high-income consumers (LSM 7–10) seeking quality sustainable fashion. Per the CEO impact email, monthly retail sales currently range KES 35,000–80,000 (≈$270–615) depending on stock, seasonal demand, and pop-up/community market activity, with average weekly turnover of KES 10,000–20,000 across participating retail and franchise activities. Higher-end curated apparel and premium thrift selections carry the strongest margins. Portions of proceeds are reinvested into sorting, logistics, cleaning, and repackaging. Note: this supersedes an earlier unverified "$20–30k profit" figure, which the actual revenue data does not support.',
+    kpis:[{v:'35–80k',l:'KES/month now'},{v:'10–20k',l:'KES/week turnover'},{v:'LSM 7–10',l:'Target segment'},{v:'50 fran.',l:'Revenue target'}] },
+
+  { id:'o7', layer:2, icon:'📊', label:'ESG & MEL Reports', sub:'CO₂ not yet measurable',
+    desc:'ESG and MEL reports not yet published. Per the CEO impact email, House of Glam cannot yet provide scientifically verified CO₂ reduction or lifecycle carbon savings — accurate computation needs specialised textile-lifecycle methodologies and emissions-accounting tools. The team is actively exploring partnerships and technical support to generate reliable future carbon assessments (waste diversion, avoided landfill emissions, extended garment lifecycle, reduced fast-fashion consumption). This output is prerequisite to attracting ESG-aligned investment and validating the impact model.',
+    content:['Quarterly MEL reports covering all output KPIs','CO₂e calculations: not yet available — seeking technical partners','Annual ESG report (target, once methodology secured)','Aligned with 60 Decibels Lean Data standards'] },
+
+  { id:'o8', layer:2, icon:'♻️', label:'Grade D Recycling', sub:'Zero landfill target',
+    desc:'Grade D textiles redirected to certified recycling partners. Requires hub to be operational and sufficient volume to make recycling partnerships viable.',
+    content:['Grade D sorted at hub intake','Redirected to certified recycling partners','Tracked in ESG/MEL reporting as landfill diversion'] },
+
+  // ── ASSUMPTIONS: Outputs → Outcomes ────────────────────────────────────
+  { id:'b1', layer:3, icon:'🚀', label:'B · Franchise Activation', sub:'≥80% active in 60 days',
+    desc:'Verbatim from Miro board. Note: currently at 2/50 franchisees — this assumption has not yet been tested at scale.',
+    ifText:'50 micro-franchisees complete training and receive inventory, POS tools, and branding support,',
+    andAssuming:'at least 80% of trained franchisees actively operate their businesses within 60 days of launch and sustain minimum monthly sales thresholds,',
+    thenText:'participating women and youth generate stable, formalized income, transitioning from volatile informal trade to structured entrepreneurship with measurable income uplift.' },
+
+  { id:'b2', layer:3, icon:'🔄', label:'B · Circular Integrity', sub:'SOPs + Grade D recycled',
+    desc:'Verbatim from Miro board. Requires hub to be in-house and operational — currently not the case (90% outsourced).',
+    ifText:'70–120 tonnes/month are sorted, graded, cleaned, and digitally tagged in compliance with SOPs, with Grade D items redirected to recycling partners,',
+    andAssuming:'hygiene and grading SOPs are consistently applied and recycling partners absorb Grade D volumes,',
+    thenText:'>80% of all textile inputs find a reuse, upcycle, or resale pathway — diverting measurable tonnes from landfill and generating trackable CO₂e avoided data.' },
+
+  { id:'b3', layer:3, icon:'🎓', label:'B · Social Delivery', sub:'≥70% attendance at MOUs',
+    desc:'Verbatim from Miro board. Requires logistics and supply bottleneck to be resolved before beneficiary allocations can begin.',
+    ifText:"HOUSE OF GLAM delivers structured clothing allocations and skills training to children's homes and refugee centres under MOUs,",
+    andAssuming:'partner institutions maintain transparent distribution and training sessions achieve ≥70% attendance,',
+    thenText:'500+ beneficiaries gain dignified, regular access to quality clothing and at least one vocational skill (repair, retail, tailoring) within the programme period.' },
+
+  // ── OUTCOMES ───────────────────────────────────────────────────────────
+  { id:'oc1', layer:4, icon:'📈', label:'Economic Outcomes', sub:'Income & franchise growth',
+    desc:'Stable franchisee income, hub employment, and local circular value chain cost reductions.',
+    kpis:[{v:'50',l:'Income earners'},{v:'30–50',l:'Jobs'},{v:'Stable',l:'Income'}],
+    content:['Women & youth earn stable, formalised income from franchise operations','Franchisee businesses grow in revenue and inventory turnover','Local circular value chain reduces sourcing costs','Transition from volatile informal trade to structured entrepreneurship'] },
+
+  { id:'oc2', layer:4, icon:'🤲', label:'Social Outcomes', sub:'Dignity, skills & inclusion',
+    desc:'Paying customers are middle- and high-income conscious consumers. Social impact flows through the supply side: franchise partners and hub workers (marginalised adults) earn income, while children\'s homes receive surplus donations.',
+    content:['Franchise partners (marginalised adults) earn stable, formalised incomes','Apprentices and hub workers gain vocational skills (repair, retail, tailoring)','Children in partner homes receive regular, dignified clothing donations','Informal textile traders transition into structured franchise entrepreneurship'] },
+
+  { id:'oc3', layer:4, icon:'🌿', label:'Environmental Outcomes', sub:'Waste diverted, CO₂e avoided',
+    desc:'Environmental benefits from circular processing and measurable waste diversion.',
+    kpis:[{v:'3.5–5t',l:'Diverted to date'},{v:'>80%',l:'Reuse target'},{v:'CO₂e',l:'Not yet measured'}],
+    content:['>80% of textile inputs reused, upcycled, or resold','CO₂e emissions measurably avoided per tonne','Grade D residuals in certified recycling streams'] },
+
+  { id:'oc4', layer:4, icon:'⚙️', label:'Systemic Outcomes', sub:'Replicable model & ESG asset',
+    desc:'Structural enablers: a replicable operational model and digital traceability asset attracting ESG-aligned capital.',
+    content:['Replicable model: SOP library, franchise playbook, ESG framework','Digital traceability creates proprietary ESG data asset','Attracts ESG-aligned investors and development finance'] },
+
+  // ── ASSUMPTIONS: Outcomes → Impacts ────────────────────────────────────
+  { id:'c1', layer:5, icon:'🌐', label:'C · Enabling Environment', sub:'Policy & demand hold',
+    desc:'Verbatim from Miro board. External conditions that House of Glam cannot control but must monitor.',
+    ifText:'Micro-franchisees sustain income growth, upcycling volumes increase, and waste diversion targets are met,',
+    andAssuming:'the external policy environment remains enabling (no restrictive import regulations), middle- and high-income consumer demand for premium sustainable and upcycled fashion holds and grows, and HOUSE OF GLAM maintains organizational and financial health beyond initial funding,',
+    thenText:'a resilient, locally-owned circular economy system is established in Kenya, informal markets are progressively formalized, and the operational model is replicable across East Africa.' },
+
+  { id:'c2', layer:5, icon:'✅', label:'C · Data Credibility', sub:'ESG data audited & trusted',
+    desc:'Verbatim from Miro board. Requires ESG/MEL reports to be published and independently verified.',
+    ifText:'The integrated model is fully operational and ESG/MEL data is audited and published,',
+    andAssuming:'impact data is credible to ESG-aligned investors and institutional donors, and the franchise playbook is transferable to new city contexts,',
+    thenText:'HOUSE OF GLAM becomes a sector-defining template for circular social enterprises in high-import, high-informality African markets — contributing to SDGs 1, 5, 8, 10, 12, and 13.' },
+
+  // ── IMPACTS ────────────────────────────────────────────────────────────
+  { id:'im1', layer:6, icon:'♻️', label:'Textile Waste Reduced', sub:'Urban Kenya & East Africa',
+    desc:'Textile waste significantly reduced in urban centres — underpinned by audited diversion data from the hub.' },
+  { id:'im2', layer:6, icon:'🔄', label:'Circular Economy', sub:'Locally owned, resilient',
+    desc:'Resilient, locally-owned circular economy in Kenya — informal markets progressively formalized, import dependency reduced.' },
+  { id:'im3', layer:6, icon:'📊', label:'Economic Mobility', sub:'Women & youth',
+    desc:'Economic mobility for women and youth through scalable franchise entrepreneurship — measurable income uplift vs. informal baseline.' },
+  { id:'im4', layer:6, icon:'🌍', label:'Model Replication', sub:'Across East Africa',
+    desc:'Operational model replicated across East Africa using the published playbook, validated by audited ESG/MEL data.' },
+  { id:'im5', layer:6, icon:'🤲', label:'Systemic Inclusion', sub:'Commercial, not charitable',
+    desc:'Systemic inclusion of vulnerable groups embedded within a commercially viable circular model — not dependent on donor cycles.' },
+  { id:'im6', layer:6, icon:'🎯', label:'SDG 1,5,8,10,12,13', sub:'Audited contribution',
+    desc:'Demonstrated, audited contribution to SDGs 1, 5, 8, 10, 12, and 13.',
+    kpis:[{v:'SDG 1',l:'No Poverty'},{v:'SDG 5',l:'Gender'},{v:'SDG 8',l:'Decent Work'},{v:'SDG 10',l:'Inequalities'},{v:'SDG 12',l:'Consumption'},{v:'SDG 13',l:'Climate'}] },
+];
+
+// ── EDGES (Miro + new logistics bottleneck edges) ─────────────────────────
+const EDGES = [
+  // Inputs → Assumptions (including logistics bottleneck)
+  {s:'i1',t:'af',type:'red'},  {s:'i1',t:'a2',type:'green'},
+  {s:'i2',t:'af',type:'red'},  {s:'i3',t:'a2',type:'green'},
+  {s:'i4',t:'a3',type:'blue'}, {s:'i5',t:'a3',type:'blue'},
+  {s:'i6',t:'af',type:'red'},
+  {s:'i7',t:'af',type:'red'},  {s:'i7',t:'a2',type:'green'},
+  {s:'i8',t:'a3',type:'blue'}, // BOTTLENECK → supply assumption (critical path)
+  // Assumptions → Outputs
+  {s:'af',t:'o1',type:'red'},  {s:'af',t:'o4',type:'red'},
+  {s:'af',t:'o7',type:'red'},  {s:'af',t:'o8',type:'red'},
+  {s:'af',t:'o6',type:'red'},
+  {s:'a2',t:'o2',type:'green'},{s:'a2',t:'o3',type:'green'},
+  {s:'a3',t:'o5',type:'blue'},{s:'a3',t:'o4',type:'blue'},
+  // Outputs → Assumptions B
+  {s:'o1',t:'b2',type:'red'},  {s:'o4',t:'b2',type:'red'},
+  {s:'o7',t:'b2',type:'red'},  {s:'o8',t:'b2',type:'red'},
+  {s:'o2',t:'b1',type:'green'},{s:'o3',t:'b1',type:'green'},
+  {s:'o6',t:'b1',type:'green'},
+  {s:'o5',t:'b3',type:'blue'},
+  // Assumptions B → Outcomes
+  {s:'b1',t:'oc1',type:'green'},{s:'b1',t:'oc4',type:'green'},
+  {s:'b2',t:'oc3',type:'red'},  {s:'b2',t:'oc4',type:'red'},
+  {s:'b3',t:'oc2',type:'blue'}, {s:'b3',t:'oc4',type:'blue'},
+  // Outcomes → Assumptions C
+  {s:'oc1',t:'c1',type:'green'},{s:'oc3',t:'c1',type:'red'},
+  {s:'oc2',t:'c1',type:'blue'}, {s:'oc2',t:'c2',type:'blue'},
+  {s:'oc4',t:'c2',type:'red'},
+  // Assumptions C → Impacts
+  {s:'c1',t:'im1',type:'red'},  {s:'c1',t:'im2',type:'red'},
+  {s:'c1',t:'im3',type:'green'},{s:'c1',t:'im4',type:'green'},
+  {s:'c2',t:'im4',type:'red'},  {s:'c2',t:'im5',type:'blue'},
+  {s:'c2',t:'im6',type:'red'},
+];
+
+// ── FEEDBACK LOOPS (new — from research assessment) ─────────────────────
+// Loop 1: Franchise revenue (o6) → reinvestment in Financial Capital (i1)
+// Loop 2: ESG data (o7) → Data Credibility assumption (c2)
+const FEEDBACK = [
+  { s:'o6', t:'i1', label:'Revenue → reinvestment in machines & hub' },
+  { s:'o7', t:'c2', label:'MEL data → investor credibility loop' },
+];
+
+// ══════════════════════════════════════════════════════════════════════════════
+// BUILD DOM
+// ══════════════════════════════════════════════════════════════════════════════
+const nodeMap = {};
+NODES.forEach(n => { n.neighbors = new Set(); nodeMap[n.id] = n; });
+EDGES.forEach(e => { nodeMap[e.s].neighbors.add(e.t); nodeMap[e.t].neighbors.add(e.s); });
+FEEDBACK.forEach(e => { nodeMap[e.s].neighbors.add(e.t); nodeMap[e.t].neighbors.add(e.s); });
+
+const byLayer = {};
+NODES.forEach(n => { (byLayer[n.layer] = byLayer[n.layer]||[]).push(n); });
+
+const colsEl = document.getElementById('columns');
+for (let li = 0; li < 7; li++) {
+  const meta = LAYER_META[li];
+  const col = document.createElement('div');
+  col.className = `column ${meta.cls}`;
+  col.innerHTML = `<div class="col-header">${meta.label}</div><div class="col-sub">${meta.sub}</div>`;
+  (byLayer[li]||[]).forEach(n => {
+    const card = document.createElement('div');
+    let extraClass = '';
+    if (n.isBottleneck) extraClass = ' bottleneck';
+    else if (n.inactive)    extraClass = ' inactive';
+    card.className = `node-card${extraClass}`;
+    card.dataset.id = n.id;
+    const nowBadge = n.now
+      ? `<div class="now-badge">Now: ${n.now.length>55 ? n.now.slice(0,55)+'…' : n.now}</div>` : '';
+    card.innerHTML = `<div class="card-icon">${n.icon}</div>
+      <div class="card-body">
+        <div class="card-label">${n.label}</div>
+        ${n.sub ? `<div class="card-sub">${n.sub}</div>` : ''}
+        ${nowBadge}
+      </div>`;
+    card.addEventListener('click', () => selectNode(n.id));
+    col.appendChild(card);
+    n._el = card;
+  });
+  colsEl.appendChild(col);
+}
+
+// ── Timeline strip ────────────────────────────────────────────────────────
+const tlEl = document.getElementById('timeline-strip');
+const tlDefs = [
+  { cls:'tl-now',  phase:'Current Stage', when:'Pilot · 4–6 women participants' },
+  { cls:'tl-now',  phase:'Near-Term',     when:'Solve logistics + buy machines' },
+  { cls:'tl-y1',   phase:'Year 1',        when:'12–18 months' },
+  { cls:'tl-y1',   phase:'Year 1',        when:'Outputs operational' },
+  { cls:'tl-y23',  phase:'Year 2–3',      when:'Outcomes emerging' },
+  { cls:'tl-y23',  phase:'Year 2–3',      when:'Assumptions tested' },
+  { cls:'tl-y5',   phase:'Year 5+',       when:'Impact at scale' },
+];
+tlDefs.forEach(t => {
+  const col = document.createElement('div');
+  col.className = 'tl-col';
+  col.innerHTML = `<div class="tl-block ${t.cls}">
+    <div class="tl-phase">${t.phase}</div>
+    <div class="tl-when">${t.when}</div>
+  </div>`;
+  tlEl.appendChild(col);
+});
+
+// ══════════════════════════════════════════════════════════════════════════════
+// SVG EDGES
+// ══════════════════════════════════════════════════════════════════════════════
+const svgEl = document.getElementById('svg-overlay');
+const ECOL = { red:'#c0392b', green:'#1a7a3c', blue:'#1558c0', feed:'#7a5c00' };
+const edgeEls = {}, feedEls = {};
+
+function getPts(elSrc, elTgt, wrap) {
+  const sr = elSrc.getBoundingClientRect(), tr = elTgt.getBoundingClientRect();
+  const wr = wrap.getBoundingClientRect();
+  const sl = wrap.scrollLeft, st = wrap.scrollTop;
+  return {
+    x1: sr.right  - wr.left + sl,
+    y1: sr.top    - wr.top  + st + sr.height/2,
+    x2: tr.left   - wr.left + sl,
+    y2: tr.top    - wr.top  + st + tr.height/2,
+  };
+}
+
+function drawEdges() {
+  // Remove old edges (keep defs)
+  [...svgEl.children].forEach(c => { if (c.tagName !== 'defs') svgEl.removeChild(c); });
+  const wrap = document.getElementById('diagram-wrap');
+  const cols = document.getElementById('columns');
+  const W = cols.scrollWidth, H = cols.scrollHeight + 60;
+  svgEl.setAttribute('width', W); svgEl.setAttribute('height', H);
+  svgEl.setAttribute('viewBox', `0 0 ${W} ${H}`);
+
+  // Regular edges
+  EDGES.forEach(e => {
+    const src = nodeMap[e.s], tgt = nodeMap[e.t];
+    if (!src._el || !tgt._el) return;
+    const {x1,y1,x2,y2} = getPts(src._el, tgt._el, wrap);
+    const dx = (x2-x1)*0.48;
+    const d = `M${x1},${y1} C${x1+dx},${y1} ${x2-dx},${y2} ${x2},${y2}`;
+    const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d',d); path.setAttribute('stroke',ECOL[e.type]);
+    path.setAttribute('stroke-width','1.8'); path.setAttribute('opacity','0.22');
+    path.setAttribute('fill','none'); path.setAttribute('stroke-linecap','round');
+    path.setAttribute('class','edge');
+    path.dataset.s=e.s; path.dataset.t=e.t; path.dataset.type=e.type;
+    svgEl.appendChild(path);
+    edgeEls[`${e.s}→${e.t}`] = path;
+  });
+
+  // Feedback loops (dashed, loop above diagram)
+  FEEDBACK.forEach((e,i) => {
+    const src = nodeMap[e.s], tgt = nodeMap[e.t];
+    if (!src._el || !tgt._el) return;
+    const {x1,y1,x2,y2} = getPts(src._el, tgt._el, wrap);
+    // Arc above the diagram (y goes negative)
+    const lift = 36 + i*20;
+    const mx = (x1+x2)/2;
+    const d = `M${x1},${y1} C${x1},${y1-lift} ${mx},${y1-lift*2} ${mx},${y1-lift*1.5} S${x2},${y2-lift} ${x2},${y2}`;
+    const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d',d); path.setAttribute('stroke',ECOL.feed);
+    path.setAttribute('stroke-width','1.8'); path.setAttribute('opacity','0.2');
+    path.setAttribute('fill','none'); path.setAttribute('stroke-dasharray','6,4');
+    path.setAttribute('marker-end','url(#arrow-feed)');
+    path.setAttribute('class','edge feed-edge');
+    path.dataset.s=e.s; path.dataset.t=e.t; path.dataset.type='feed';
+    svgEl.appendChild(path);
+    feedEls[`${e.s}⟳${e.t}`] = path;
+  });
+}
+
+requestAnimationFrame(() => setTimeout(drawEdges, 80));
+window.addEventListener('resize', () => setTimeout(drawEdges, 80));
+
+// ══════════════════════════════════════════════════════════════════════════════
+// INTERACTION
+// ══════════════════════════════════════════════════════════════════════════════
+let selectedId = null, activeFilter = 'all';
+
+function applyVisualState() {
+  const activeTypes = activeFilter==='all' ? new Set(['red','green','blue','feed'])
+    : activeFilter==='feed' ? new Set(['feed'])
+    : new Set([activeFilter]);
+
+  const filterNodes = new Set();
+  if (activeFilter !== 'all') {
+    const allEdges = activeFilter==='feed'
+      ? FEEDBACK.map(e=>({...e,type:'feed'}))
+      : EDGES.filter(e=>e.type===activeFilter);
+    allEdges.forEach(e=>{ filterNodes.add(e.s); filterNodes.add(e.t); });
+  }
+
+  document.querySelectorAll('.node-card').forEach(card => {
+    const id = card.dataset.id;
+    card.classList.remove('selected','neighbor','dimmed');
+    if (selectedId) {
+      if (id===selectedId) card.classList.add('selected');
+      else if (nodeMap[selectedId].neighbors.has(id)) card.classList.add('neighbor');
+      else card.classList.add('dimmed');
+    } else if (activeFilter!=='all') {
+      if (!filterNodes.has(id)) card.classList.add('dimmed');
+    }
+  });
+
+  document.querySelectorAll('.edge').forEach(path => {
+    const s=path.dataset.s, t=path.dataset.t, type=path.dataset.type;
+    let op='0.22', w='1.8';
+    if (selectedId) {
+      if (s===selectedId||t===selectedId) { op='0.85'; w='3'; }
+      else op='0.03';
+    } else if (activeFilter!=='all') {
+      if (activeTypes.has(type)) { op=type==='feed'?'0.7':'0.75'; w='2.5'; }
+      else op='0.03';
+    }
+    path.style.opacity=op; path.style.strokeWidth=w;
+  });
+}
+
+function selectNode(id) {
+  selectedId = selectedId===id ? null : id;
+  if (selectedId) renderPanel(nodeMap[id]);
+  else renderPanel(null);
+  applyVisualState();
+}
+
+function resetAll() {
+  selectedId=null; activeFilter='all';
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelector('.filter-btn.all').classList.add('active');
+  renderPanel(null); applyVisualState();
+}
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.f;
+    selectedId = null; renderPanel(null); applyVisualState();
+  });
+});
+document.getElementById('btn-reset').addEventListener('click', resetAll);
+
+// ══════════════════════════════════════════════════════════════════════════════
+// DETAIL PANEL
+// ══════════════════════════════════════════════════════════════════════════════
+const LNAMES = ['Input','Assumption','Output','Assumption','Outcome','Assumption','Impact'];
+const ECOLS  = { red:'#c0392b', green:'#1a7a3c', blue:'#1558c0', feed:'#7a5c00' };
+const ELABELS= { red:'Operational & data', green:'Personnel & franchise', blue:'Supply & partner', feed:'Feedback loop' };
+
+function renderPanel(node) {
+  const panel = document.getElementById('detail-panel');
+  const scroll = document.getElementById('panel-scroll');
+  if (!node) {
+    panel.classList.add('closed');
+    scroll.innerHTML=`<div class="panel-empty"><div class="pe-icon">↖</div>
+      <div>Click any card to see details, current state, targets, and causal logic</div></div>`;
+    return;
+  }
+  panel.classList.remove('closed');
+  const chip = LAYER_META[node.layer].chip;
+
+  const upstream   = EDGES.filter(e=>e.t===node.id);
+  const downstream = EDGES.filter(e=>e.s===node.id);
+  const feedUp     = FEEDBACK.filter(e=>e.t===node.id);
+  const feedDown   = FEEDBACK.filter(e=>e.s===node.id);
+  const myTypes    = [...new Set([...upstream,...downstream].map(e=>e.type))];
+  if(feedUp.length||feedDown.length) myTypes.push('feed');
+
+  function cTag(nid){
+    const n=nodeMap[nid]; const lc=LAYER_META[n.layer]; const col=lc.chip;
+    return `<span class="conn-tag" style="color:${col};border-color:${col};background:${col}18"
+      onclick="selectNode('${n.id}')">${n.icon} ${n.label}</span>`;
+  }
+
+  let html=`<span class="p-chip" style="background:${chip}">${LNAMES[node.layer]}</span>
+    <div class="p-title" style="color:${chip}">${node.icon} ${node.label}</div>
+    <div class="p-desc">${node.desc}</div>`;
+
+  // Bottleneck warning
+  if (node.isBottleneck) {
+    html+=`<div class="warn-box"><strong>⚠️ #1 Operational Bottleneck</strong><br>
+      Identified by CEO Brian as the primary constraint blocking supply regularisation.
+      Must be solved before Assumption A3 can hold.</div>`;
+  }
+
+  // Profit warning
+  if (node.warnText) {
+    html+=`<div class="warn-box"><strong>⚠️ To Verify</strong><br>${node.warnText}</div>`;
+  }
+
+  // Now / Target
+  if (node.now || node.target) {
+    html+=`<div class="p-sec">Current vs. Target</div>
+      <div class="now-target">
+        ${node.now?`<div class="nt-box nt-now"><div class="nt-label">● Now</div>
+          <div class="nt-val">${node.now}</div></div>`:''}
+        ${node.target?`<div class="nt-box nt-target"><div class="nt-label">Target</div>
+          <div class="nt-val">${node.target}</div></div>`:''}
+      </div>`;
+  }
+
+  // Machine milestone
+  if (node.milestone) {
+    html+=`<div class="p-sec">Near-term Milestone</div>
+      <div class="milestone-box">
+        <div class="mb-title">🔧 ${node.milestone.title}</div>
+        ${node.milestone.items.map(i=>`<div class="mb-item">
+          <span>${i.l}</span><strong>${i.v}</strong></div>`).join('')}
+      </div>`;
+  }
+
+  // KPIs
+  if (node.kpis?.length) {
+    html+=`<div class="p-sec">Key Metrics</div><div class="kpi-grid">`;
+    node.kpis.forEach(k=>{
+      html+=`<div class="kpi${k.verify?' verify':''}" style="border-color:${chip}30;background:${chip}08">
+        <div class="kv" style="color:${chip}">${k.v}</div>
+        <div class="kl">${k.l}</div></div>`;
+    });
+    html+=`</div>`;
+  }
+
+  // Edge types
+  if (myTypes.length) {
+    html+=`<div style="margin-bottom:10px">`;
+    myTypes.forEach(t=>{
+      html+=`<span class="etype-badge" style="color:${ECOLS[t]};border-color:${ECOLS[t]};background:${ECOLS[t]}14">
+        <span class="etype-dot" style="background:${ECOLS[t]}"></span>${ELABELS[t]}</span>`;
+    });
+    html+=`</div>`;
+  }
+
+  // IF/THEN
+  if (node.ifText) {
+    html+=`<div class="p-sec">Assumption Logic (IF → THEN)</div>
+      <div class="logic-block" style="border-color:#e8c84060;background:#fef9ec">
+        <div class="logic-kw" style="background:#e8c840;color:#5a4400">IF</div>
+        <div class="logic-body">${node.ifText}</div></div>`;
+    if (node.andAssuming) {
+      html+=`<div class="logic-block" style="border-color:#d4a01060;background:#fdf3dc">
+        <div class="logic-kw" style="background:#d4a010;color:#fff">AND ASSUMING</div>
+        <div class="logic-body">${node.andAssuming}</div></div>`;
+    }
+    html+=`<div class="logic-block then" style="border-color:#145048;background:#e5f3f0">
+      <div class="logic-kw" style="background:#145048;color:#fff">THEN</div>
+      <div class="logic-body">${node.thenText}</div></div>`;
+  }
+
+  // Content
+  if (node.content?.length) {
+    html+=`<div class="p-sec">Key Elements</div>
+      <ul class="p-list">${node.content.map(c=>`<li>${c}</li>`).join('')}</ul>`;
+  }
+
+  // Connections
+  if (upstream.length||feedUp.length) {
+    const all=[...upstream.map(e=>cTag(e.s)), ...feedUp.map(e=>cTag(e.s)+' ⟳')];
+    html+=`<div class="p-sec">↑ Receives from (${all.length})</div>
+      <div class="conn-row">${all.join('')}</div>`;
+  }
+  if (downstream.length||feedDown.length) {
+    const all=[...downstream.map(e=>cTag(e.t)), ...feedDown.map(e=>cTag(e.t)+' ⟳')];
+    html+=`<div class="p-sec">↓ Feeds into (${all.length})</div>
+      <div class="conn-row">${all.join('')}</div>`;
+  }
+
+  scroll.innerHTML = html;
+}
+</script>
+</body>
+</html>
